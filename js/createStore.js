@@ -1,4 +1,21 @@
-let state;
+function createStore(reducer) {
+  let state;
+
+  function dispatch(action) {
+    state = reducer(state, action);
+    render();
+  };
+
+  function getState() {
+    return state;
+  }
+
+  return { dispatch, getState };
+}
+
+let store = createStore(reducer);
+let button = document.getElementById('button');
+
 
 function reducer(state = { count: 0 }, action) {
   switch (action.type) {
@@ -10,19 +27,13 @@ function reducer(state = { count: 0 }, action) {
   }
 };
 
-function dispatch(action){
-  state = reducer(state, action);
-  render();
-};
-
 function render() {
   let container = document.getElementById('container');
-  container.textContent = state.count;
+  container.textContent = store.getState().count;
 };
 
-dispatch({ type: '@@INIT' })
-let button = document.getElementById('button');
+store.dispatch({ type: "beef" })
 
-button.addEventListener('click', function() {
-    dispatch({ type: 'INCREASE_COUNT' });
+button.addEventListener('click', () => {
+  store.dispatch({ type: 'INCREASE_COUNT' });
 })
